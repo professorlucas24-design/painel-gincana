@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Gincana dos Saberes — Painel ABCD",
-  "short_name": "Gincana ABCD",
-  "description": "Painel de alternativas da Gincana dos Saberes de Ararendá.",
+  "name": "Gincana dos Saberes — SPAECE Ararendá",
+  "short_name": "Gincana dos Saberes",
+  "description": "Gincana dos Saberes SPAECE 2026 — Ararendá.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",

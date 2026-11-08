@@ -1,4 +1,4 @@
-const CACHE = "gincana-abcd-v8";
+const CACHE = "gincana-abcd-v9";
 const BASE = self.registration.scope;
 
 const ARQUIVOS = [
