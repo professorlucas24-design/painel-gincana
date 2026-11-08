@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Gincana dos Saberes — Painel ABCD",
+  "short_name": "Gincana ABCD",
+  "description": "Painel de alternativas da Gincana dos Saberes de Ararendá.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06452f",
+  "theme_color": "#06452f",
+  "icons": [
+    {
+      "src": "./icone.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

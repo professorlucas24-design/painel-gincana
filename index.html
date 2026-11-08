@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06452f">
+  <title>Painel ABCD | Gincana dos Saberes</title>
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icone.svg" type="image/svg+xml">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --verde: #06452f;
+      --azul: #082454;
+      --ouro: #ffcf55;
+      --branco: #f6faf7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--branco);
+      background:
+        radial-gradient(ellipse at top right, #117547 0%, transparent 58%),
+        linear-gradient(145deg, #063c2b, #031e19);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible {
+      outline: 4px solid white;
+      outline-offset: 5px;
+    }
+
+    .app {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 16px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #ffffff25;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mini-logo {
+      width: 52px;
+      height: 64px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .selo {
+      color: var(--ouro);
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      margin: 0 0 6px;
+    }
+
+    h1 {
+      font-size: clamp(18px, 2.8vw, 29px);
+      margin: 0;
+    }
+
+    .subtitulo {
+      margin: 5px 0 0;
+      font-size: 13px;
+      color: #c7ded2;
+    }
+
+    .ferramentas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .controle {
+      border: 1px solid #ffffff40;
+      border-radius: 12px;
+      padding: 12px 16px;
+      background: #ffffff0d;
+      color: white;
+      min-height: 44px;
+      font-weight: bold;
+    }
+
+    .controle[aria-pressed="true"] {
+      background: var(--ouro);
+      color: #142744;
+      border-color: var(--ouro);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .identidade {
+      padding: 12px;
+      border: 1px solid #ffffff20;
+      border-radius: 22px;
+      background: #ffffff06;
+    }
+
+    .identidade img {
+      display: block;
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .painel {
+      text-align: center;
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      font-size: clamp(20px, 3vw, 30px);
+    }
+
+    .instrucao {
+      margin: 0 0 18px;
+      color: #c7ded2;
+      font-size: 15px;
+    }
+
+    .alternativas {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      justify-items: center;
+      gap: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .alternativa {
+      display: grid;
+      place-items: center;
+      width: min(100%, 28vh);
+      min-width: 110px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 3px solid var(--ouro);
+      background: linear-gradient(145deg, #153c78, #061a40);
+      color: white;
+      font-size: clamp(64px, 12vh, 130px);
+      font-weight: 900;
+      line-height: 1;
+      box-shadow:
+        0 12px 25px #00000030,
+        inset 0 2px 0 #ffffff20;
+      transition: transform 120ms, background 120ms;
+    }
+
+    .alternativa:active {
+      transform: scale(.95);
+      background: #205297;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      border-top: 1px solid #ffffff20;
+      font-size: 12px;
+      color: #c7ded2;
+    }
+
+    #offline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #offline::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ouro);
+      flex-shrink: 0;
+    }
+
+    #offline.pronto::before {
+      background: #7cf2a6;
+    }
+
+    #aviso {
+      margin: 0;
+      text-align: center;
+      color: var(--ouro);
+      font-size: 13px;
+    }
+
+    #aviso:empty { display: none; }
+
+    dialog {
+      position: fixed;
+      inset: 0;
+      margin: 0;
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      height: 100dvh;
+      max-height: none;
+      padding: 24px;
+      border: 0;
+      color: white;
+      background:
+        radial-gradient(ellipse at top, #164885, transparent 70%),
+        #061a40;
+    }
+
+    dialog::backdrop { background: #061a40; }
+
+    .resposta {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .resposta-marca {
+      color: var(--ouro);
+      font-weight: bold;
+      letter-spacing: 2px;
+      font-size: clamp(12px, 2vw, 20px);
+    }
+
+    .resposta-rotulo {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #cedcf0;
+    }
+
+    #letra {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      font-size: min(62vh, 75vw);
+      font-weight: 900;
+      line-height: .95;
+      text-shadow: 0 10px 0 #00000020;
+    }
+
+    dialog[open] #letra {
+      animation: aparecer 180ms ease-out;
+    }
+
+    #voltar {
+      background: var(--ouro);
+      color: #082454;
+      border: 0;
+      border-radius: 16px;
+      min-height: 56px;
+      padding: 16px 32px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .rodape-resposta {
+      color: #b9cbe1;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    @keyframes aparecer {
+      from { transform: scale(.85); opacity: .3; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 850px) {
+      main { grid-template-columns: 1fr; }
+      .identidade { display: none; }
+      .app { padding: 16px; }
+    }
+
+    @media (max-width: 520px) {
+      header {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .ferramentas { width: 100%; }
+      .controle { flex: 1; padding: 10px; }
+      .alternativas { gap: 18px; }
+      .alternativa { width: min(100%, 24vh); }
+      .selo { font-size: 10px; }
+      footer { justify-content: center; text-align: center; }
+    }
+
+    @media (max-height: 550px) and (orientation: landscape) {
+      .app { padding: 10px 20px; gap: 8px; }
+      header { padding-bottom: 8px; }
+      .mini-logo { width: 36px; height: 42px; }
+      .subtitulo, .identidade { display: none; }
+      main { grid-template-columns: 1fr; }
+      .alternativas {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        max-width: 1000px;
+      }
+      .alternativa { width: min(100%, 36vh); font-size: 19vh; }
+      .instrucao { margin-bottom: 10px; }
+      footer { padding-top: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+        /* Fundo personalizado e painel ampliado */
+    body {
+      position: relative;
+      isolation: isolate;
+      background: #043b29;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: url("./logo.png") center 42% / 85% auto no-repeat;
+      opacity: 0.09;
+    }
+
+    .app {
+      max-width: 1600px;
+    }
+
+    /* Remove o cartaz lateral */
+    .identidade {
+      display: none;
+    }
+
+    main {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .painel {
+      width: 100%;
+      padding: 8px 0;
+    }
+
+    .alternativas {
+      width: 100%;
+      max-width: 1100px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(14px, 3vh, 28px);
+      margin: auto;
+    }
+
+    .alternativa {
+      width: 100%;
+      min-width: 0;
+      height: clamp(140px, 28vh, 340px);
+      aspect-ratio: auto;
+      border-radius: 30px;
+      border: 3px solid #ffcf55;
+      background: linear-gradient(145deg, #12386bee, #061a40f5);
+      font-size: clamp(90px, 20vh, 230px);
+      box-shadow:
+        0 12px 28px #00000035,
+        inset 0 2px 0 #ffffff18;
+    }
+
+    /* Letra escolhida em destaque */
+    dialog {
+      isolation: isolate;
+      overflow: auto;
+      background: #061a40;
+    }
+
+    dialog::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: url("./logo.png") center / cover no-repeat;
+      opacity: 0.06;
+    }
+
+    #letra {
+      font-size: min(66vh, 82vw);
+      color: #ffffff;
+    }
+
+    @media (max-width: 520px) {
+      .alternativas {
+        gap: 14px;
+      }
+
+      .alternativa {
+        height: clamp(140px, 24vh, 230px);
+        border-radius: 24px;
+        font-size: clamp(90px, 17vh, 160px);
+      }
+    }
+
+    @media (max-height: 550px) and (orientation: landscape) {
+      .alternativas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .alternativa {
+        height: clamp(80px, 24vh, 130px);
+        font-size: 19vh;
+        border-radius: 20px;
+      }
+
+      .painel {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div class="marca">
+        <img class="mini-logo" src="./logo.png"
+             alt="Identidade da Gincana dos Saberes">
+        <div>
+          <p class="selo">ARARENDÁ • SPAECE 2026</p>
+          <h1>Gincana dos Saberes</h1>
+          <p class="subtitulo">Painel de alternativas</p>
+        </div>
+      </div>
+
+      <div class="ferramentas">
+        <button class="controle" id="som"
+        type="button" aria-pressed="true">
+  Som: ligado
+</button>
+
+        <button class="controle" id="tela" type="button">
+          Tela cheia
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <aside class="identidade" aria-label="Arte do evento">
+        <img src="./logo.png"
+             alt="Gincana dos Saberes SPAECE 2026.
+                  Conhecimento que transforma, sucesso que inspira!">
+      </aside>
+
+      <section class="painel" aria-labelledby="titulo-painel">
+        <h2 id="titulo-painel">Escolha sua alternativa</h2>
+        <p class="instrucao">
+          Toque na letra e mostre sua resposta.
+        </p>
+
+        <div class="alternativas">
+          <button class="alternativa" type="button"
+                  data-letra="A" aria-label="Escolher alternativa A">A</button>
+          <button class="alternativa" type="button"
+                  data-letra="B" aria-label="Escolher alternativa B">B</button>
+          <button class="alternativa" type="button"
+                  data-letra="C" aria-label="Escolher alternativa C">C</button>
+          <button class="alternativa" type="button"
+                  data-letra="D" aria-label="Escolher alternativa D">D</button>
+        </div>
+      </section>
+    </main>
+
+    <p id="aviso" role="status"></p>
+
+    <footer>
+      <span>Secretaria da Educação • Ararendá</span>
+      <span id="offline" role="status">Verificando uso offline…</span>
+    </footer>
+  </div>
+
+  <dialog id="resultado" aria-labelledby="resposta-titulo letra">
+    <div class="resposta">
+      <div>
+        <div class="resposta-marca">GINCANA DOS SABERES • 2026</div>
+        <div class="resposta-rotulo" id="resposta-titulo">
+          Alternativa escolhida
+        </div>
+      </div>
+
+      <div id="letra">A</div>
+
+      <div>
+        <button id="voltar" type="button" autofocus>
+          ← Voltar às alternativas
+        </button>
+        <div class="rodape-resposta">ARARENDÁ • SPAECE</div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const resultado = document.querySelector("#resultado");
+    const letra = document.querySelector("#letra");
+    const voltar = document.querySelector("#voltar");
+    const som = document.querySelector("#som");
+    const tela = document.querySelector("#tela");
+    const aviso = document.querySelector("#aviso");
+    const offline = document.querySelector("#offline");
+
+    let somAtivo = true;
+    let audio;
+    let ultimaEscolha;
+    let preparado = false;
+
+        async function tocarSom() {
+      if (!somAtivo) return;
+
+      try {
+        const AudioContext =
+          window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContext) return;
+
+        audio = audio || new AudioContext();
+        await audio.resume();
+
+        const inicio = audio.currentTime;
+        const notas = [784, 988, 1175, 1568, 1976];
+
+        const saida = audio.createGain();
+        saida.gain.value = 0.65;
+        saida.connect(audio.destination);
+
+        let encerradas = 0;
+
+        notas.forEach((frequencia, indice) => {
+          const oscilador = audio.createOscillator();
+          const envelope = audio.createGain();
+
+          const momento = inicio + indice * 0.20
+          const duracao = indice === notas.length - 1 ? 2.20 : 0.55;
+
+          oscilador.type = "triangle";
+          oscilador.frequency.setValueAtTime(frequencia, momento);
+
+          envelope.gain.setValueAtTime(0, momento);
+          envelope.gain.linearRampToValueAtTime(0.42, momento + 0.012);
+          if (indice === notas.length - 1) {
+  envelope.gain.setValueAtTime(0.30, momento + 0.25);
+  envelope.gain.setValueAtTime(0.30, momento + 1.20);
+}
+          envelope.gain.exponentialRampToValueAtTime(
+            0.001,
+            momento + duracao
+          );
+
+          oscilador.connect(envelope);
+          envelope.connect(saida);
+
+          oscilador.start(momento);
+          oscilador.stop(momento + duracao + 0.02);
+
+          oscilador.onended = () => {
+            oscilador.disconnect();
+            envelope.disconnect();
+
+            encerradas++;
+            if (encerradas === notas.length) {
+              saida.disconnect();
+            }
+          };
+        });
+      } catch {
+        // Se o áudio falhar, a escolha da alternativa continua funcionando.
+      }
+    }
+function escolher(valor, botao) {
+      if (resultado.open) return;
+
+      ultimaEscolha = botao;
+      letra.textContent = valor;
+      resultado.showModal();
+      voltar.focus();
+      tocarSom();
+    }
+
+    document.querySelectorAll("[data-letra]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        escolher(botao.dataset.letra, botao);
+      });
+    });
+
+    voltar.addEventListener("click", () => resultado.close());
+
+    resultado.addEventListener("close", () => {
+      ultimaEscolha?.focus();
+    });
+
+    som.addEventListener("click", () => {
+      somAtivo = !somAtivo;
+      som.textContent = somAtivo ? "Som: ligado" : "Som: desligado";
+      som.setAttribute("aria-pressed", String(somAtivo));
+      if (somAtivo) tocarSom();
+    });
+
+    tela.addEventListener("click", async () => {
+      aviso.textContent = "";
+
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        } else if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        } else {
+          aviso.textContent = "Tela cheia indisponível neste navegador.";
+        }
+      } catch {
+        aviso.textContent = "Não foi possível ativar a tela cheia.";
+      }
+    });
+
+    document.addEventListener("fullscreenchange", () => {
+      tela.textContent = document.fullscreenElement
+        ? "Sair da tela cheia"
+        : "Tela cheia";
+    });
+
+    document.addEventListener("keydown", evento => {
+      if (evento.ctrlKey || evento.altKey || evento.metaKey || evento.repeat) {
+        return;
+      }
+
+      const valor = evento.key.toUpperCase();
+
+      if (!resultado.open && ["A", "B", "C", "D"].includes(valor)) {
+        evento.preventDefault();
+        const botao = document.querySelector(`[data-letra="${valor}"]`);
+        escolher(valor, botao);
+      }
+    });
+
+    function atualizarStatus() {
+      if (!preparado) return;
+
+      offline.classList.add("pronto");
+      offline.textContent = navigator.onLine
+        ? "Preparado para uso offline"
+        : "Sem conexão • painel disponível";
+    }
+
+    function verificarArquivos(worker) {
+      return new Promise((resolve, reject) => {
+        const canal = new MessageChannel();
+
+        const limite = setTimeout(() => {
+          canal.port1.close();
+          reject(new Error("Tempo de verificação esgotado"));
+        }, 8000);
+
+        canal.port1.onmessage = evento => {
+          clearTimeout(limite);
+          canal.port1.close();
+          resolve(evento.data?.pronto === true);
+        };
+
+        worker.postMessage({ tipo: "VERIFICAR_OFFLINE" }, [canal.port2]);
+      });
+    }
+
+    async function prepararOffline() {
+      if (location.protocol === "file:") {
+        offline.textContent = "Prévia local • offline será preparado pelo site";
+        return;
+      }
+
+      if (!("serviceWorker" in navigator) || !window.isSecureContext) {
+        offline.textContent = "Abra pelo link HTTPS no Chrome";
+        return;
+      }
+
+      let limite;
+
+      try {
+        const registro = await navigator.serviceWorker.register("./sw.js");
+
+        const pronto = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise((_, reject) => {
+            limite = setTimeout(
+              () => reject(new Error("Preparação não concluída")),
+              30000
+            );
+          })
+        ]);
+
+        clearTimeout(limite);
+        preparado = await verificarArquivos(pronto.active);
+
+        if (!preparado) throw new Error("Arquivos incompletos");
+
+        atualizarStatus();
+
+        // Procura atualizações quando houver conexão.
+        if (navigator.onLine) registro.update().catch(() => {});
+      } catch {
+        clearTimeout(limite);
+        offline.textContent =
+          "Offline não confirmado • confira os arquivos e recarregue com internet";
+      }
+    }
+
+    window.addEventListener("online", atualizarStatus);
+    window.addEventListener("offline", atualizarStatus);
+
+    prepararOffline();
+  </script>
+</body>
+</html>
